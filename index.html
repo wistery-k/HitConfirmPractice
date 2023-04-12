@@ -27,7 +27,7 @@
 </head>
 <body>
   <div id="screen">
-    <span id="countdown">Press N to start</span>
+    <span id="countdown">Nキーで開始。背景が赤くなったらKキー。青くなったら何もしない。</span>
     <span id="message"></span>
   </div>
 
@@ -76,15 +76,15 @@
         clearInterval(timerId);
 
         if (isRed && isHitConfirmed) { // ヒット時
-          messageEl.innerText = 'Success! ' + hitConfirmedFrame.toFixed(1) + 'F';
+          messageEl.innerText = '成功! ' + hitConfirmedFrame.toFixed(1) + 'Fで反応した';
         } else if (!isRed && !isHitConfirmed) { // ガード時
-          messageEl.innerText = 'Success!';
+          messageEl.innerText = '成功!';
         } else {
-          messageEl.innerText = 'Failure!';
+          messageEl.innerText = '失敗!';
         }
 
         setTimeout(() => {
-          countdownEl.innerText = 'Press N to start';
+          countdownEl.innerText = 'Nキーで開始。背景が赤くなったらKキー。青くなったら何もしない。';
           messageEl.innerText = '';
           screenEl.style.backgroundColor = 'gray';
           timerId = undefined;
