@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>Hit Confirmation Practice</title>
+  <style>
+    #screen {
+      width: 100%;
+      height: 100vh;
+      background-color: gray;
+      text-align: center;
+      font-size: 5rem;
+      font-weight: bold;
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+    }
+
+    #message {
+      margin-top: 1rem;
+      font-size: 2rem;
+      font-weight: normal;
+    }
+  </style>
+</head>
+<body>
+  <div id="screen">
+    <span id="countdown">Press N to start</span>
+    <span id="message"></span>
+  </div>
+
+  <script>
+    const countdownEl = document.getElementById('countdown');
+    const messageEl = document.getElementById('message');
+    const screenEl = document.getElementById('screen');
+
+    let timerId;
+
+    function startCountdown() {
+      let remainingSeconds = 1.0;
+      countdownEl.innerText = remainingSeconds.toFixed(2);
+
+      timerId = setInterval(() => {
+        remainingSeconds -= 0.01;
+        countdownEl.innerText = remainingSeconds.toFixed(2);
+
+        if (remainingSeconds <= 0) {
+          clearInterval(timerId);
+          startHitConfirmation();
+        }
+      }, 10);
+    }
+
+    function startHitConfirmation() {
+      const isRed = Math.random() < 0.5;
+      screenEl.style.backgroundColor = isRed ? 'red' : 'blue';
+
+      let isHitConfirmed = false;
+      let hitConfirmedFrame = 0;
+      let startTime = new Date().getTime();
+
+      const handleKeyDown = (event) => {
+        let elapsedFrames = (new Date().getTime() - startTime) / (1000/60);
+        if (event.key === 'k' && elapsedFrames <= 16.0) {
+          isHitConfirmed = true;
+          hitConfirmedFrame = elapsedFrames;
+        }
+      };
+
+      document.addEventListener('keydown', handleKeyDown);
+
+      setTimeout(() => {
+        document.removeEventListener('keydown', handleKeyDown);
+        clearInterval(timerId);
+
+        if (isRed && isHitConfirmed) { // ヒット時
+          messageEl.innerText = 'Success! ' + hitConfirmedFrame.toFixed(1) + 'F';
+        } else if (!isRed && !isHitConfirmed) { // ガード時
+          messageEl.innerText = 'Success!';
+        } else {
+          messageEl.innerText = 'Failure!';
+        }
+
+        setTimeout(() => {
+          countdownEl.innerText = 'Press N to start';
+          messageEl.innerText = '';
+          screenEl.style.backgroundColor = 'gray';
+          timerId = undefined;
+        }, 1000);
+      }, 1000 / 60 * 16);
+    }
+
+    document.addEventListener('keydown', (event) => {
+      if (event.key === 'n' && !timerId) {
+        startCountdown();
+      }
+    });
+  </script>
+</body>
+</html>
